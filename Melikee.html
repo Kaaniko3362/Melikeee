@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melikemee Sürprizz!</title>
+  <style>
+    :root { --bg:#000; --fg:#fff; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      background-color: var(--bg);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: var(--fg);
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    button {
+      font-size: 1.1em;
+      padding: 10px 25px;
+      border: 2px solid var(--fg);
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #111;
+      color: var(--fg);
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    button:hover { transform: scale(1.05); }
+
+    @keyframes fadeIn { 
+      from { opacity: 0; } 
+      to { opacity: 1; }
+    }
+
+    /* Kalp yağmuru */
+    .heart {
+      position: fixed;
+      top: -20px;
+      font-size: 25px;
+      color: #ff4f85;
+      animation: fall linear forwards;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    #final-message {
+      font-size: 2.3em;
+      font-weight: bold;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: 0.6s ease;
+      margin-top: 20px;
+    }
+
+    #final-message.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1 id="question">Sana bir hediyem varr Melikemm💌</h1>
+
+  <div class="buttons">
+    <button id="continueBtn">Devam Et</button>
+    <button id="stopBtn">Devam Etme</button>
+  </div>
+
+  <h1 id="final-message"></h1>
+
+<script>
+  const questions = [
+    "Doğum günün kutlu olsun Melikeee.",
+    "Sen dünyanın en iyi dostusunnn.",
+    "Çok güzel bir insansın hep öylede kalacağını düşünüyorumm.",
+    "Tekrardan doğum günün çokk çokk kutlu olsun.",
+    "seni hep çok seveceğimmm.",
+    "💞💞💞"
+  ];
+
+  const funnyResponses = [
+    "O kadar uğraştık okumak zorundasınnn.",
+    "Beni kırmaaa.",
+    "Okuyacaksın ulannn.",
+    "Kalbimi kırdınn."
+  ];
+
+  const questionEl = document.getElementById("question");
+  const continueBtn = document.getElementById("continueBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const finalMessageEl = document.getElementById("final-message");
+
+  let index = 0;
+  let escapeCount = 0;
+
+  continueBtn.addEventListener("click", () => {
+    index++;
+    if (index < questions.length) {
+      questionEl.textContent = questions[index];
+    } else {
+      startHearts();
+    }
+  });
+
+  // Hem bilgisayar hem iPhone için çalışır
+  function moveAway() {
+    if (escapeCount < 3) {
+      const x = Math.random() * 300 - 150;
+      const y = Math.random() * 150 - 75;
+      stopBtn.style.transform = `translate(${x}px, ${y}px)`;
+      escapeCount++;
+    }
+  }
+
+  stopBtn.addEventListener("mouseover", moveAway);   // PC
+  stopBtn.addEventListener("touchstart", moveAway);  // iPhone
+
+  stopBtn.addEventListener("click", () => {
+    if (escapeCount >= 3) {
+      const msg = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+      questionEl.textContent = msg + " Devam Et'e bas 😄";
+    }
+  });
+
+  function startHearts() {
+    document.querySelector(".buttons").style.display = "none";
+    questionEl.style.display = "none";
+
+    finalMessageEl.textContent = "DOĞUM GÜNÜN KUTLU OLSUN MELİKEMMMM💘";
+    finalMessageEl.classList.add("show");
+
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💘";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        if (heart.parentNode) heart.remove();
+      }, 5000);
+    }, 200);
+  }
+</script>
+
+</body>
+</html>
